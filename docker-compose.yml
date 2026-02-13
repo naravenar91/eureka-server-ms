@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  eureka-server:
+    build: ./eureka-server-ms
+    ports:
+      - "8761:8761"
+    networks:
+      - mi-red-municipal
+
+  auth-api:
+    build: ./auth-api
+    depends_on:
+      - eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - mi-red-municipal
+
+  municipality-api:
+    build: ./municipality-api
+    depends_on:
+      - eureka-server
+    environment:
+      - QUARKUS_EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    networks:
+      - mi-red-municipal
+
+networks:
+  mi-red-municipal:
+    driver: bridge
