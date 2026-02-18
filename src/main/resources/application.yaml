@@ -6,6 +6,16 @@ server:
   port: 8761
 
 eureka:
+  instance:
+    # Usamos el nombre del servicio definido en docker-compose
+    hostname: eureka-server
   client:
+    # No se registra a sí mismo ni busca otros servidores
     register-with-eureka: false
     fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    # Desactiva el modo de autoprotección para desarrollo (evita que mantenga
+    # instancias "muertas" por mucho tiempo si se caen)
+    enable-self-preservation: false
